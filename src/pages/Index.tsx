@@ -110,8 +110,7 @@ const Index = () => {
       {/* Testimonial */}
       <section className="py-16 text-center px-4">
         <p className="text-base text-muted-foreground italic max-w-lg mx-auto leading-relaxed">
-          "We moved to Amsterdam with two kids and had no idea where to start. Snapshot
-          made the whole process feel manageable — even enjoyable."
+          Family testimony
         </p>
         <p className="text-xs font-medium text-foreground mt-3">— Sarah K., relocated from London</p>
       </section>
