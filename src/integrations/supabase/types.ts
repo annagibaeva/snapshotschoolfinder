@@ -14,7 +14,140 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      applications: {
+        Row: {
+          child_id: string | null
+          created_at: string
+          current_step: number | null
+          id: string
+          notes: string | null
+          school_id: string
+          school_name: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          child_id?: string | null
+          created_at?: string
+          current_step?: number | null
+          id?: string
+          notes?: string | null
+          school_id: string
+          school_name: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          child_id?: string | null
+          created_at?: string
+          current_step?: number | null
+          id?: string
+          notes?: string | null
+          school_id?: string
+          school_name?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      children: {
+        Row: {
+          age: string
+          created_at: string
+          id: string
+          languages: string | null
+          move_city: string | null
+          move_country: string | null
+          move_date: string | null
+          name: string | null
+          school_types: string[] | null
+          special_needs: string | null
+          top_priorities: string[] | null
+          updated_at: string
+          user_id: string
+          want_doc_help: boolean | null
+          want_timeline: boolean | null
+          want_tracking: boolean | null
+        }
+        Insert: {
+          age: string
+          created_at?: string
+          id?: string
+          languages?: string | null
+          move_city?: string | null
+          move_country?: string | null
+          move_date?: string | null
+          name?: string | null
+          school_types?: string[] | null
+          special_needs?: string | null
+          top_priorities?: string[] | null
+          updated_at?: string
+          user_id: string
+          want_doc_help?: boolean | null
+          want_timeline?: boolean | null
+          want_tracking?: boolean | null
+        }
+        Update: {
+          age?: string
+          created_at?: string
+          id?: string
+          languages?: string | null
+          move_city?: string | null
+          move_country?: string | null
+          move_date?: string | null
+          name?: string | null
+          school_types?: string[] | null
+          special_needs?: string | null
+          top_priorities?: string[] | null
+          updated_at?: string
+          user_id?: string
+          want_doc_help?: boolean | null
+          want_timeline?: boolean | null
+          want_tracking?: boolean | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
