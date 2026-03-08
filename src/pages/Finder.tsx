@@ -27,6 +27,8 @@ const Finder = () => {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FinderFormData>(initialData);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const canProceed = () => {
     switch (step) {
@@ -37,11 +39,31 @@ const Finder = () => {
     }
   };
 
+  const saveChildProfile = async () => {
+    if (!user) return;
+    await supabase.from("children").insert({
+      user_id: user.id,
+      name: data.child.name || null,
+      age: data.child.age,
+      languages: data.child.languages || null,
+      special_needs: data.child.specialNeeds || null,
+      move_country: data.move.country || null,
+      move_city: data.move.city || null,
+      move_date: data.move.moveDate || null,
+      school_types: data.preferences.schoolTypes,
+      top_priorities: data.preferences.topPriorities,
+      want_tracking: data.preferences.wantApplicationTracking,
+      want_doc_help: data.preferences.wantDocumentHelp,
+      want_timeline: data.preferences.wantTimelineBuilding,
+    });
+  };
+
   const next = () => {
     if (!canProceed()) return;
     if (step === 2) {
       setLoading(true);
-      setTimeout(() => {
+      setTimeout(async () => {
+        if (user) await saveChildProfile();
         setLoading(false);
         setStep(3);
       }, 2000);
