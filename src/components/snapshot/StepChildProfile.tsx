@@ -1,137 +1,80 @@
 import { ChildProfile } from "@/types/snapshot";
+import { ageOptions } from "@/data/mockSchools";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import ChipSelect from "./ChipSelect";
-import { Baby } from "lucide-react";
 
 interface Props {
   data: ChildProfile;
   onChange: (data: ChildProfile) => void;
 }
 
-const yearGroups = [
-  "Nursery / Pre-K",
-  "Reception / Kindergarten",
-  "Year 1 / Grade 1",
-  "Year 2 / Grade 2",
-  "Year 3 / Grade 3",
-  "Year 4 / Grade 4",
-  "Year 5 / Grade 5",
-  "Year 6 / Grade 6",
-  "Year 7 / Grade 7",
-  "Year 8 / Grade 8",
-  "Year 9 / Grade 9",
-  "Year 10 / Grade 10",
-  "Year 11 / Grade 11",
-  "Year 12 / Grade 12",
-  "Year 13 / Grade 13",
-];
-
-const languageOptions = [
-  "English", "Dutch", "French", "German", "Spanish", "Mandarin",
-  "Arabic", "Portuguese", "Japanese", "Korean", "Russian", "Italian",
-];
-
 const StepChildProfile = ({ data, onChange }: Props) => {
   const update = <K extends keyof ChildProfile>(field: K, value: ChildProfile[K]) =>
     onChange({ ...data, [field]: value });
 
-  const toggleLanguage = (lang: string) => {
-    const langs = data.languages.includes(lang)
-      ? data.languages.filter((l) => l !== lang)
-      : [...data.languages, lang];
-    update("languages", langs);
-  };
-
   return (
-    <div className="animate-slide-up">
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary mb-4">
-          <Baby className="w-6 h-6" />
-        </div>
-        <h2 className="text-2xl md:text-3xl font-serif font-semibold text-foreground mb-2">
-          Tell us about your child
-        </h2>
-        <p className="text-muted-foreground max-w-md mx-auto">
-          This helps us find age-appropriate options and the right fit.
-        </p>
-      </div>
-
-      <div className="max-w-md mx-auto space-y-5">
+    <div className="animate-slide-up flex flex-col gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="childName">Child's first name</Label>
+          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Child's First Name
+          </Label>
           <Input
-            id="childName"
-            placeholder="e.g. Sophia"
+            placeholder="e.g. Olivia"
             value={data.name}
             onChange={(e) => update("name", e.target.value)}
             className="h-12 bg-card"
           />
         </div>
-
         <div className="space-y-2">
-          <Label htmlFor="childAge">Age</Label>
-          <Input
-            id="childAge"
-            type="number"
-            min="0"
-            max="18"
-            placeholder="e.g. 6"
-            value={data.age}
-            onChange={(e) => update("age", e.target.value)}
-            className="h-12 bg-card"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Current year group</Label>
-          <Select value={data.yearGroup} onValueChange={(v) => update("yearGroup", v)}>
+          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Age / Year Group *
+          </Label>
+          <Select value={data.age} onValueChange={(v) => update("age", v)}>
             <SelectTrigger className="h-12 bg-card">
-              <SelectValue placeholder="Select year group" />
+              <SelectValue placeholder="Select age" />
             </SelectTrigger>
             <SelectContent>
-              {yearGroups.map((yg) => (
-                <SelectItem key={yg} value={yg}>{yg}</SelectItem>
+              {ageOptions.map((opt) => (
+                <SelectItem key={opt} value={opt}>{opt}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
+      </div>
 
-        <div className="space-y-2">
-          <Label>Languages spoken</Label>
-          <ChipSelect
-            options={languageOptions}
-            selected={data.languages}
-            onToggle={toggleLanguage}
-          />
-        </div>
+      <div className="space-y-2">
+        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          Languages spoken at home
+        </Label>
+        <Input
+          placeholder="e.g. English, French"
+          value={data.languages}
+          onChange={(e) => update("languages", e.target.value)}
+          className="h-12 bg-card"
+        />
+      </div>
 
-        <div className="flex items-center justify-between py-3 px-4 rounded-lg bg-card border border-border">
-          <Label htmlFor="specialNeeds" className="cursor-pointer">
-            Any special educational needs?
-          </Label>
-          <Switch
-            id="specialNeeds"
-            checked={data.hasSpecialNeeds}
-            onCheckedChange={(v) => update("hasSpecialNeeds", v)}
-          />
-        </div>
+      <div className="space-y-2">
+        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          Any special educational needs or considerations?
+        </Label>
+        <Textarea
+          placeholder="e.g. gifted learner, dyslexia support, EAL, physical accessibility needs..."
+          value={data.specialNeeds}
+          onChange={(e) => update("specialNeeds", e.target.value)}
+          className="bg-card resize-none"
+          rows={3}
+        />
+      </div>
 
-        {data.hasSpecialNeeds && (
-          <div className="space-y-2 animate-fade-in">
-            <Label htmlFor="senDetails">Please describe</Label>
-            <Textarea
-              id="senDetails"
-              placeholder="e.g. Dyslexia support needed, speech therapy..."
-              value={data.specialNeedsDetails}
-              onChange={(e) => update("specialNeedsDetails", e.target.value)}
-              className="bg-card"
-            />
-          </div>
-        )}
+      <div className="flex gap-3 items-start p-4 rounded-xl bg-primary/5 border border-primary/15">
+        <span className="text-lg shrink-0">🔒</span>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          Your child's information is private and only used to personalise your school matches. We never share it with schools without your permission.
+        </p>
       </div>
     </div>
   );

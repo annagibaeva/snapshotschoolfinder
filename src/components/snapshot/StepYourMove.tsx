@@ -1,7 +1,6 @@
 import { MoveDetails } from "@/types/snapshot";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MapPin, Calendar } from "lucide-react";
 
 interface Props {
   data: MoveDetails;
@@ -13,59 +12,52 @@ const StepYourMove = ({ data, onChange }: Props) => {
     onChange({ ...data, [field]: value });
 
   return (
-    <div className="animate-slide-up">
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary mb-4">
-          <MapPin className="w-6 h-6" />
-        </div>
-        <h2 className="text-2xl md:text-3xl font-serif font-semibold text-foreground mb-2">
-          Where are you moving?
-        </h2>
-        <p className="text-muted-foreground max-w-md mx-auto">
-          Tell us about your destination so we can find the best schools in your new area.
-        </p>
-      </div>
-
-      <div className="max-w-md mx-auto space-y-5">
+    <div className="animate-slide-up flex flex-col gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="country" className="text-sm font-medium">
-            Country
+          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Destination City *
           </Label>
           <Input
-            id="country"
-            placeholder="e.g. Netherlands"
-            value={data.country}
-            onChange={(e) => update("country", e.target.value)}
-            className="h-12 bg-card"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="city" className="text-sm font-medium">
-            City or area
-          </Label>
-          <Input
-            id="city"
             placeholder="e.g. Amsterdam"
             value={data.city}
             onChange={(e) => update("city", e.target.value)}
             className="h-12 bg-card"
           />
         </div>
-
         <div className="space-y-2">
-          <Label htmlFor="moveDate" className="text-sm font-medium flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-muted-foreground" />
-            Planned move date
+          <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Country *
           </Label>
           <Input
-            id="moveDate"
-            type="month"
-            value={data.moveDate}
-            onChange={(e) => update("moveDate", e.target.value)}
+            placeholder="e.g. Netherlands"
+            value={data.country}
+            onChange={(e) => update("country", e.target.value)}
             className="h-12 bg-card"
           />
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          Planned Move Date
+        </Label>
+        <Input
+          type="month"
+          value={data.moveDate}
+          onChange={(e) => update("moveDate", e.target.value)}
+          className="h-12 bg-card"
+        />
+        <p className="text-xs text-muted-foreground">
+          This helps us flag which application windows are still open
+        </p>
+      </div>
+
+      <div className="flex gap-3 items-start p-4 rounded-xl bg-primary/5 border border-primary/15">
+        <span className="text-lg shrink-0">💡</span>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          We currently cover <strong className="text-foreground">42 countries</strong> and <strong className="text-foreground">500+ schools</strong>, with a focus on expat-heavy destinations in Europe, Asia, and the Middle East.
+        </p>
       </div>
     </div>
   );

@@ -1,16 +1,14 @@
 export interface MoveDetails {
   country: string;
   city: string;
-  moveDate: string; // YYYY-MM
+  moveDate: string;
 }
 
 export interface ChildProfile {
   name: string;
   age: string;
-  yearGroup: string;
-  languages: string[];
-  hasSpecialNeeds: boolean;
-  specialNeedsDetails: string;
+  languages: string;
+  specialNeeds: string;
 }
 
 export interface Preferences {
@@ -43,5 +41,9 @@ export interface School {
   matchScore: number;
   highlights: string[];
   tuitionRange: string;
+  lang: string;
+  deadline: string;
+  color: string;
   applicationSteps: ApplicationStep[];
+  tip: string;
 }
