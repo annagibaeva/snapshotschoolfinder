@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { FinderFormData } from "@/types/snapshot";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useAIShortlist } from "@/hooks/useAIShortlist";
 import ProgressBar from "@/components/snapshot/ProgressBar";
 import StepYourMove from "@/components/snapshot/StepYourMove";
 import StepChildProfile from "@/components/snapshot/StepChildProfile";
 import StepPreferences from "@/components/snapshot/StepPreferences";
 import StepMatches from "@/components/snapshot/StepMatches";
+import NotificationBell from "@/components/notifications/NotificationBell";
 import { cn } from "@/lib/utils";
 
 const initialData: FinderFormData = {
@@ -29,6 +31,7 @@ const Finder = () => {
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { schools: aiSchools, loading: aiLoading, error: aiError, generateShortlist } = useAIShortlist();
 
   const canProceed = () => {
     switch (step) {
@@ -62,11 +65,15 @@ const Finder = () => {
     if (!canProceed()) return;
     if (step === 2) {
       setLoading(true);
-      setTimeout(async () => {
+      // Save profile and trigger AI shortlist in parallel
+      const doWork = async () => {
         if (user) await saveChildProfile();
+        // Start AI generation (non-blocking — will show loading in StepMatches)
+        generateShortlist(data);
         setLoading(false);
         setStep(3);
-      }, 2000);
+      };
+      setTimeout(doWork, 1500);
     } else {
       setStep(step + 1);
     }
@@ -76,7 +83,6 @@ const Finder = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
         <div className="max-w-[720px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2.5">
@@ -90,6 +96,7 @@ const Finder = () => {
           </a>
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground hidden sm:block">For expat families</span>
+            <NotificationBell />
             {user ? (
               <button onClick={() => navigate("/dashboard")} className="px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 text-xs font-semibold text-primary">
                 Dashboard
@@ -104,7 +111,6 @@ const Finder = () => {
       </header>
 
       <div className="max-w-[720px] mx-auto px-4 sm:px-6 py-10 md:py-12">
-        {/* Hero - only on step 0 */}
         {step === 0 && (
           <div className="text-center mb-10 animate-fade-in">
             <span className="inline-block px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 text-xs font-semibold text-primary tracking-wide mb-5">
@@ -124,9 +130,7 @@ const Finder = () => {
           </div>
         )}
 
-        {/* Form card */}
         <div className="bg-background rounded-2xl border border-border shadow-lg overflow-hidden">
-          {/* Dark card header */}
           <div className="bg-gradient-to-br from-foreground to-foreground/80 px-6 md:px-8 py-6">
             <ProgressBar currentStep={step} variant="dark" />
             <h2 className="font-serif text-xl md:text-[22px] font-semibold text-primary-foreground mt-2">
@@ -137,7 +141,6 @@ const Finder = () => {
             </p>
           </div>
 
-          {/* Card body */}
           <div className="p-6 md:p-8" key={step}>
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
@@ -150,12 +153,19 @@ const Finder = () => {
                 {step === 0 && <StepYourMove data={data.move} onChange={(move) => setData({ ...data, move })} />}
                 {step === 1 && <StepChildProfile data={data.child} onChange={(child) => setData({ ...data, child })} />}
                 {step === 2 && <StepPreferences data={data.preferences} onChange={(preferences) => setData({ ...data, preferences })} />}
-                {step === 3 && <StepMatches data={data} />}
+                {step === 3 && (
+                  <StepMatches
+                    data={data}
+                    aiSchools={aiSchools}
+                    aiLoading={aiLoading}
+                    aiError={aiError}
+                    onRetryAI={() => generateShortlist(data)}
+                  />
+                )}
               </>
             )}
           </div>
 
-          {/* Footer nav */}
           {step < 3 && !loading && (
             <div className="px-6 md:px-8 py-5 border-t border-border bg-muted/30 flex justify-between items-center">
               {step > 0 ? (
@@ -182,7 +192,6 @@ const Finder = () => {
           )}
         </div>
 
-        {/* Trust bar - step 0 only */}
         {step === 0 && (
           <div className="flex justify-center gap-8 mt-10 animate-fade-in flex-wrap">
             {[

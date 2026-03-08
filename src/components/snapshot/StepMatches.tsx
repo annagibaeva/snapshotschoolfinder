@@ -1,17 +1,24 @@
 import { useNavigate } from "react-router-dom";
-import { FinderFormData } from "@/types/snapshot";
+import { FinderFormData, School } from "@/types/snapshot";
 import { getMatchedSchools } from "@/data/mockSchools";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import SchoolCard from "./SchoolCard";
 import { toast } from "@/hooks/use-toast";
+import { Sparkles, Database } from "lucide-react";
 
 interface Props {
   data: FinderFormData;
+  aiSchools?: School[];
+  aiLoading?: boolean;
+  aiError?: string | null;
+  onRetryAI?: () => void;
 }
 
-const StepMatches = ({ data }: Props) => {
-  const schools = getMatchedSchools(data.preferences.schoolTypes, data.move.city);
+const StepMatches = ({ data, aiSchools, aiLoading, aiError, onRetryAI }: Props) => {
+  const fallbackSchools = getMatchedSchools(data.preferences.schoolTypes, data.move.city);
+  const hasAI = aiSchools && aiSchools.length > 0;
+  const schools = hasAI ? aiSchools : fallbackSchools;
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -35,50 +42,88 @@ const StepMatches = ({ data }: Props) => {
 
   return (
     <div className="animate-slide-up">
-      {/* Success banner */}
-      <div className="flex gap-3 items-center p-4 rounded-xl bg-secondary/10 border border-secondary/30 mb-6">
-        <span className="text-xl shrink-0">✅</span>
-        <div>
-          <p className="text-sm font-semibold text-secondary">
-            We found {schools.length} schools matching your profile in {data.move.city || "your city"}
-          </p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Sorted by match score · {data.child.age || "your child"}'s age group · {
-              data.preferences.schoolTypes.length > 0
-                ? data.preferences.schoolTypes.join(", ")
-                : "all types"
-            }
-          </p>
+      {/* AI loading state */}
+      {aiLoading && (
+        <div className="flex flex-col items-center justify-center py-12 animate-fade-in">
+          <Sparkles className="w-8 h-8 text-primary animate-pulse mb-3" />
+          <p className="text-sm font-medium text-foreground">AI is personalising your school list...</p>
+          <p className="text-xs text-muted-foreground mt-1">Analysing schools in {data.move.city || "your city"}</p>
         </div>
-      </div>
+      )}
 
-      <div className="flex flex-col gap-4">
-        {schools.map((school, i) => (
-          <SchoolCard
-            key={school.id}
-            school={school}
-            index={i}
-            onStartApplication={() => handleStartApplication(school.id, school.name)}
-          />
-        ))}
-      </div>
+      {/* AI error with fallback */}
+      {aiError && !aiLoading && (
+        <div className="flex gap-3 items-center p-4 rounded-xl bg-destructive/10 border border-destructive/30 mb-4">
+          <span className="text-xl shrink-0">⚠️</span>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-destructive">AI recommendations unavailable</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Showing curated matches instead. {aiError}</p>
+          </div>
+          {onRetryAI && (
+            <button onClick={onRetryAI} className="text-xs font-semibold text-primary hover:underline shrink-0">
+              Retry
+            </button>
+          )}
+        </div>
+      )}
 
-      {/* CTA */}
-      <div className="mt-7 p-6 bg-primary/5 border border-primary/15 rounded-2xl text-center">
-        <div className="text-xl mb-2">📬</div>
-        <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
-          Want us to manage your applications?
-        </h3>
-        <p className="text-sm text-muted-foreground leading-relaxed mb-5 max-w-md mx-auto">
-          Snapshot can track deadlines, remind you of next steps, help you prepare documents, and liaise with schools on your behalf.
-        </p>
-        <button
-          onClick={() => user ? navigate("/dashboard") : navigate("/auth")}
-          className="px-8 py-3.5 bg-primary text-primary-foreground rounded-xl font-bold text-sm tracking-wide shadow-md hover:opacity-90 transition-opacity"
-        >
-          {user ? "Go to Dashboard →" : "Create Free Account & Start Tracking →"}
-        </button>
-      </div>
+      {!aiLoading && (
+        <>
+          {/* Success banner */}
+          <div className="flex gap-3 items-center p-4 rounded-xl bg-secondary/10 border border-secondary/30 mb-6">
+            {hasAI ? (
+              <Sparkles className="w-5 h-5 text-primary shrink-0" />
+            ) : (
+              <span className="text-xl shrink-0">✅</span>
+            )}
+            <div>
+              <p className="text-sm font-semibold text-secondary">
+                {hasAI ? (
+                  <>AI found {schools.length} personalised matches in {data.move.city || "your city"}</>
+                ) : (
+                  <>We found {schools.length} schools matching your profile in {data.move.city || "your city"}</>
+                )}
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {hasAI && <span className="inline-flex items-center gap-1 mr-2"><Sparkles className="w-3 h-3" /> AI-powered</span>}
+                Sorted by match score · {data.child.age || "your child"}'s age group · {
+                  data.preferences.schoolTypes.length > 0
+                    ? data.preferences.schoolTypes.join(", ")
+                    : "all types"
+                }
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            {schools.map((school, i) => (
+              <SchoolCard
+                key={school.id}
+                school={school}
+                index={i}
+                onStartApplication={() => handleStartApplication(school.id, school.name)}
+              />
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div className="mt-7 p-6 bg-primary/5 border border-primary/15 rounded-2xl text-center">
+            <div className="text-xl mb-2">📬</div>
+            <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
+              Want us to manage your applications?
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-5 max-w-md mx-auto">
+              Snapshot can track deadlines, remind you of next steps, help you prepare documents, and liaise with schools on your behalf.
+            </p>
+            <button
+              onClick={() => user ? navigate("/dashboard") : navigate("/auth")}
+              className="px-8 py-3.5 bg-primary text-primary-foreground rounded-xl font-bold text-sm tracking-wide shadow-md hover:opacity-90 transition-opacity"
+            >
+              {user ? "Go to Dashboard →" : "Create Free Account & Start Tracking →"}
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
