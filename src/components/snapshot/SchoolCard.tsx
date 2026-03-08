@@ -91,6 +91,7 @@ const SchoolCard = ({ school, index, onStartApplication }: Props) => {
             </div>
 
             <button
+              onClick={onStartApplication}
               className="mt-3.5 w-full py-3 rounded-xl text-sm font-bold text-primary-foreground tracking-wide transition-opacity hover:opacity-90"
               style={{ backgroundColor: `hsl(${school.color})` }}
             >
