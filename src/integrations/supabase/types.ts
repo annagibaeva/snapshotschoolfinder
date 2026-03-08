@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_recommendations: {
+        Row: {
+          child_id: string | null
+          created_at: string
+          id: string
+          prompt_summary: string | null
+          recommendations: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          child_id?: string | null
+          created_at?: string
+          id?: string
+          prompt_summary?: string | null
+          recommendations?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          child_id?: string | null
+          created_at?: string
+          id?: string
+          prompt_summary?: string | null
+          recommendations?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_recommendations_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       applications: {
         Row: {
           child_id: string | null
@@ -147,6 +185,66 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      reminders: {
+        Row: {
+          application_id: string | null
+          child_id: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          is_sent: boolean
+          message: string
+          remind_at: string | null
+          title: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          application_id?: string | null
+          child_id?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          is_sent?: boolean
+          message: string
+          remind_at?: string | null
+          title: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          application_id?: string | null
+          child_id?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          is_sent?: boolean
+          message?: string
+          remind_at?: string | null
+          title?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reminders_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reminders_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
