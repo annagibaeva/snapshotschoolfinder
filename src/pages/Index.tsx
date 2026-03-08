@@ -20,9 +20,14 @@ const Index = () => {
             <span className="text-[10px] text-muted-foreground uppercase tracking-widest">School Finder</span>
           </div>
         </div>
-        <Button variant="ghost" size="sm" onClick={() => navigate("/finder")}>
-          Get started
-        </Button>
+        <div className="flex items-center gap-2">
+          {user ? (
+            <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>Dashboard</Button>
+          ) : (
+            <Button variant="ghost" size="sm" onClick={() => navigate("/auth")}>Sign in</Button>
+          )}
+          <Button size="sm" onClick={() => navigate("/finder")}>Get started</Button>
+        </div>
       </header>
 
       {/* Hero */}
