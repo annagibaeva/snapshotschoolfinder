@@ -1,1 +1,7 @@
 project_id = "dijewcpliybsgrjphwoe"
+
+[functions.generate-shortlist]
+verify_jwt = false
+
+[functions.check-reminders]
+verify_jwt = false
