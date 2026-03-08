@@ -90,9 +90,15 @@ const Finder = () => {
           </a>
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground hidden sm:block">For expat families</span>
-            <button className="px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 text-xs font-semibold text-primary">
-              Sign In
-            </button>
+            {user ? (
+              <button onClick={() => navigate("/dashboard")} className="px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 text-xs font-semibold text-primary">
+                Dashboard
+              </button>
+            ) : (
+              <button onClick={() => navigate("/auth")} className="px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 text-xs font-semibold text-primary">
+                Sign In
+              </button>
+            )}
           </div>
         </div>
       </header>
