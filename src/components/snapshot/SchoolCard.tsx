@@ -8,7 +8,7 @@ interface Props {
   onStartApplication?: () => void;
 }
 
-const SchoolCard = ({ school, index }: Props) => {
+const SchoolCard = ({ school, index, onStartApplication }: Props) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
