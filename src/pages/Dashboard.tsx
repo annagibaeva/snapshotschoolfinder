@@ -74,7 +74,7 @@ const Dashboard = () => {
       if (childRes.data) setChildren(childRes.data);
       if (appRes.data) setApplications(appRes.data);
       if (remRes.data) setReminders(remRes.data as ReminderRecord[]);
-      if (aiRes.data) setAiRecs(aiRes.data as AIRecommendation[]);
+      if (aiRes.data) setAiRecs(aiRes.data as unknown as AIRecommendation[]);
     };
     load();
   }, [user]);
