@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 interface Props {
   school: School;
   index: number;
+  onStartApplication?: () => void;
 }
 
 const SchoolCard = ({ school, index }: Props) => {
