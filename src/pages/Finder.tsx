@@ -1,5 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FinderFormData } from "@/types/snapshot";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import ProgressBar from "@/components/snapshot/ProgressBar";
 import StepYourMove from "@/components/snapshot/StepYourMove";
 import StepChildProfile from "@/components/snapshot/StepChildProfile";
