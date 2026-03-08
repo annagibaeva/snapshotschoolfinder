@@ -1,8 +1,6 @@
+import { useState } from "react";
 import { School } from "@/types/snapshot";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { CheckCircle2 } from "lucide-react";
 
 interface Props {
   school: School;
@@ -10,83 +8,96 @@ interface Props {
 }
 
 const SchoolCard = ({ school, index }: Props) => {
-  const scoreColor =
-    school.matchScore >= 85 ? "text-secondary" :
-    school.matchScore >= 70 ? "text-primary" :
-    "text-muted-foreground";
+  const [expanded, setExpanded] = useState(false);
 
   return (
     <div
-      className={cn(
-        "animate-slide-up rounded-xl border border-border bg-card p-5 md:p-6 transition-shadow hover:shadow-md",
-        `stagger-${index + 1}`
-      )}
-      style={{ opacity: 0, animationFillMode: "forwards" }}
+      className="animate-slide-up bg-background rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+      style={{
+        animationDelay: `${index * 0.1}s`,
+        opacity: 0,
+        animationFillMode: "forwards",
+        borderLeft: `5px solid hsl(${school.color})`,
+      }}
     >
-      <div className="flex items-start justify-between gap-4 mb-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <Badge variant="secondary" className="text-xs font-medium">
-              {school.type}
-            </Badge>
-            <Badge variant="outline" className="text-xs">
-              {school.curriculum}
-            </Badge>
+      <div className="p-5 md:p-6">
+        <div className="flex justify-between items-start gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2.5 mb-1.5 flex-wrap">
+              <span
+                className="text-[11px] font-bold px-2.5 py-0.5 rounded-full text-primary-foreground tracking-wide"
+                style={{ backgroundColor: `hsl(${school.color})` }}
+              >
+                {school.matchScore}% Match
+              </span>
+              <span className="text-xs text-muted-foreground">{school.type}</span>
+            </div>
+            <h3 className="text-lg font-serif font-bold text-foreground">{school.name}</h3>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
+              <span className="text-xs text-muted-foreground">👶 Ages {school.ageRange}</span>
+              <span className="text-xs text-muted-foreground">🗣️ {school.lang}</span>
+              <span className="text-xs text-muted-foreground">📅 Deadline: {school.deadline}</span>
+            </div>
           </div>
-          <h3 className="text-lg font-serif font-semibold text-foreground mt-2">
-            {school.name}
-          </h3>
-          <p className="text-sm text-muted-foreground mt-0.5">{school.location}</p>
         </div>
 
-        <div className="flex flex-col items-center shrink-0">
-          <div className={cn("text-2xl font-bold", scoreColor)}>
-            {school.matchScore}%
-          </div>
-          <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
-            match
-          </span>
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {school.highlights.map((h) => (
+            <span key={h} className="text-[11px] px-2.5 py-1 rounded-full bg-muted text-muted-foreground font-medium">
+              {h}
+            </span>
+          ))}
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-3">
-        <span className="text-xs text-muted-foreground">Ages {school.ageRange}</span>
-        <span className="text-xs text-muted-foreground">·</span>
-        <span className="text-xs text-muted-foreground">{school.tuitionRange}</span>
-      </div>
+      <div className="px-5 md:px-6 pb-1">
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex items-center gap-1.5 text-sm font-semibold text-primary py-3 hover:opacity-80 transition-opacity"
+        >
+          {expanded ? "▲ Hide" : "▼ Show"} Application Journey
+        </button>
 
-      <div className="flex flex-wrap gap-1.5 mb-4">
-        {school.highlights.map((h) => (
-          <span
-            key={h}
-            className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-accent/50 text-accent-foreground"
-          >
-            <CheckCircle2 className="w-3 h-3 text-secondary" />
-            {h}
-          </span>
-        ))}
-      </div>
-
-      <Accordion type="single" collapsible>
-        <AccordionItem value="journey" className="border-none">
-          <AccordionTrigger className="text-sm font-medium text-primary hover:no-underline py-2 px-0">
-            View application journey ({school.applicationSteps.length} steps)
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="relative pl-6 mt-2 space-y-4">
-              <div className="absolute left-2 top-1 bottom-1 w-px bg-border" />
+        {expanded && (
+          <div className="pb-5 animate-fade-in">
+            {/* Horizontal step timeline */}
+            <div className="flex items-start mt-2 overflow-x-auto pb-2">
               {school.applicationSteps.map((step, i) => (
-                <div key={i} className="relative">
-                  <div className="absolute -left-[18px] top-1 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background" />
-                  <h4 className="text-sm font-medium text-foreground">{step.title}</h4>
-                  <p className="text-xs text-muted-foreground mt-0.5">{step.description}</p>
-                  <p className="text-xs text-primary font-medium mt-1">⏱ {step.timeline}</p>
+                <div key={i} className={cn("flex items-center", i < school.applicationSteps.length - 1 && "flex-1")}>
+                  <div className="flex flex-col items-center gap-1.5 min-w-[70px]">
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-primary-foreground shrink-0"
+                      style={{ backgroundColor: `hsl(${school.color})` }}
+                    >
+                      {i + 1}
+                    </div>
+                    <span className="text-[10px] text-muted-foreground text-center leading-tight max-w-[80px]">
+                      {step.title}
+                    </span>
+                  </div>
+                  {i < school.applicationSteps.length - 1 && (
+                    <div className="flex-1 h-0.5 bg-border mx-1 mb-5" />
+                  )}
                 </div>
               ))}
             </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+
+            {/* Tip box */}
+            <div className="mt-4 p-3.5 bg-primary/5 border border-primary/15 rounded-xl">
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                💡 <strong className="text-foreground">Snapshot tip:</strong> {school.tip}
+              </p>
+            </div>
+
+            <button
+              className="mt-3.5 w-full py-3 rounded-xl text-sm font-bold text-primary-foreground tracking-wide transition-opacity hover:opacity-90"
+              style={{ backgroundColor: `hsl(${school.color})` }}
+            >
+              Start Application with Snapshot →
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

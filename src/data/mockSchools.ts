@@ -1,132 +1,109 @@
 import { School } from "@/types/snapshot";
 
+export const schoolTypeOptions = [
+  { id: "international", label: "International School", icon: "🌍", desc: "IB, British, American curriculum" },
+  { id: "local_public", label: "Local Public School", icon: "🏫", desc: "State-funded, local curriculum" },
+  { id: "local_private", label: "Local Private School", icon: "🎓", desc: "Private, local curriculum" },
+  { id: "montessori", label: "Montessori", icon: "🌱", desc: "Child-led learning philosophy" },
+  { id: "nursery", label: "Nursery / Daycare", icon: "🧸", desc: "Ages 0–3 early education" },
+  { id: "bilingual", label: "Bilingual School", icon: "💬", desc: "Two-language immersion" },
+];
+
+export const priorityOptions = [
+  { id: "academic", label: "Academic Excellence", icon: "📚" },
+  { id: "wellbeing", label: "Child Wellbeing", icon: "💛" },
+  { id: "language", label: "Language Support", icon: "🗣️" },
+  { id: "community", label: "Expat Community", icon: "🤝" },
+  { id: "sport", label: "Sports & Arts", icon: "🎨" },
+  { id: "proximity", label: "Close to Home", icon: "📍" },
+];
+
+export const ageOptions = [
+  "0–1 (Newborn/Infant)",
+  "1–2 (Toddler)",
+  "2–3 (Nursery age)",
+  "3–4 (Pre-K)",
+  "4–5 (Kindergarten)",
+  "5–6 (Year 1 / Grade 1)",
+  "6–7 (Year 2 / Grade 2)",
+  "7–8 (Year 3 / Grade 3)",
+  "8–10 (Year 4–5)",
+  "10–12 (Year 6–7)",
+  "12–14 (Secondary / Middle)",
+  "14–18 (High School / Sixth Form)",
+];
+
 export const mockSchools: School[] = [
   {
     id: "1",
     name: "The International School of Amsterdam",
-    type: "International",
+    type: "International · IB",
     curriculum: "IB",
-    location: "Amsterdam Zuid, Netherlands",
+    location: "Amsterdam Zuid",
     ageRange: "3–18",
-    matchScore: 94,
-    highlights: ["Full IB programme", "40+ nationalities", "English-medium", "Strong pastoral care"],
+    matchScore: 97,
+    highlights: ["IB Diploma", "Expat-friendly", "Strong community"],
     tuitionRange: "€12,000–€22,000/yr",
+    lang: "English",
+    deadline: "Feb 2025",
+    color: "142 40% 33%",
+    tip: "This school receives high demand from expat families. We recommend starting your enquiry at least 6 months before your intended start date.",
     applicationSteps: [
       { title: "Online Application", description: "Complete the online form with child details and upload documents", timeline: "2–3 weeks before deadline" },
-      { title: "Document Submission", description: "Submit transcripts, passport copies, and immunisation records", timeline: "With application" },
       { title: "Assessment Day", description: "Child attends a half-day assessment with age-appropriate activities", timeline: "4–6 weeks after application" },
       { title: "Interview", description: "Family interview with admissions team (can be virtual)", timeline: "1–2 weeks after assessment" },
-      { title: "Decision", description: "Offer letter sent via email with enrollment deadline", timeline: "2–3 weeks after interview" },
+      { title: "Offer", description: "Offer letter sent via email with enrollment deadline", timeline: "2–3 weeks after interview" },
     ],
   },
   {
     id: "2",
-    name: "Sunflower Montessori Nursery",
-    type: "Montessori",
+    name: "Montessori Academy Noord",
+    type: "Montessori · Private",
     curriculum: "Montessori",
-    location: "Amsterdam Oud-West, Netherlands",
-    ageRange: "0–6",
-    matchScore: 88,
-    highlights: ["Bilingual Dutch/English", "Small group sizes", "Garden play area", "Flexible hours"],
+    location: "Amsterdam Noord",
+    ageRange: "2–12",
+    matchScore: 91,
+    highlights: ["Child-led", "Bilingual", "Small classes"],
     tuitionRange: "€1,200–€1,800/mo",
+    lang: "Dutch/English",
+    deadline: "Rolling",
+    color: "14 68% 63%",
+    tip: "Montessori schools often have rolling admissions but limited spots. Visiting early gives you the best chance at placement.",
     applicationSteps: [
-      { title: "Enquiry & Tour", description: "Book a school tour and meet the lead guide", timeline: "Anytime" },
-      { title: "Waitlist Registration", description: "Complete registration form and pay the €50 admin fee", timeline: "After tour" },
-      { title: "Place Offered", description: "When a spot opens, you'll receive an offer by email", timeline: "Varies (1–12 months)" },
-      { title: "Trial Week", description: "Child attends for a settling-in week", timeline: "Before start date" },
+      { title: "Enquiry Form", description: "Submit interest form on the school website", timeline: "Anytime" },
+      { title: "School Visit", description: "Book and attend a tour of the school", timeline: "Within 2 weeks" },
+      { title: "Application", description: "Complete full application with supporting documents", timeline: "After visit" },
+      { title: "Offer", description: "Place offered when available", timeline: "1–6 months" },
     ],
   },
   {
     id: "3",
-    name: "De Regenboog Primary School",
-    type: "Local Curriculum",
+    name: "Basisschool De Regenboog",
+    type: "Local Public",
     curriculum: "Dutch National",
-    location: "Amsterdam Oost, Netherlands",
+    location: "Amsterdam Oost",
     ageRange: "4–12",
-    matchScore: 72,
-    highlights: ["Free public education", "Strong community feel", "Dutch-medium with NT2 support", "After-school care available"],
-    tuitionRange: "Free (voluntary contribution ~€100/yr)",
+    matchScore: 78,
+    highlights: ["Local curriculum", "Affordable", "Integration support"],
+    tuitionRange: "Free (voluntary ~€100/yr)",
+    lang: "Dutch",
+    deadline: "Mar 2025",
+    color: "231 19% 30%",
+    tip: "Public schools in the Netherlands are free and generally guaranteed for children in the catchment area. Register early for popular schools.",
     applicationSteps: [
-      { title: "Registration", description: "Register with the municipality and apply directly to the school", timeline: "From age 3" },
-      { title: "School Visit", description: "Tour the school and meet the principal", timeline: "By appointment" },
-      { title: "Placement", description: "Confirmation of placement, typically guaranteed for catchment area", timeline: "3–6 months before start" },
-    ],
-  },
-  {
-    id: "4",
-    name: "Little Explorers Daycare",
-    type: "Daycare",
-    curriculum: "Play-based",
-    location: "Amsterdam Centrum, Netherlands",
-    ageRange: "0–4",
-    matchScore: 85,
-    highlights: ["Central location", "English-speaking staff", "Organic meals included", "Open 7:30–18:30"],
-    tuitionRange: "€1,400–€2,100/mo (childcare benefit eligible)",
-    applicationSteps: [
-      { title: "Enquiry", description: "Contact the daycare and request availability", timeline: "Anytime" },
-      { title: "Visit & Tour", description: "Visit during opening hours to see the environment", timeline: "Within 1–2 weeks" },
-      { title: "Waitlist", description: "Join the waitlist with preferred start date", timeline: "After visit" },
-      { title: "Contract", description: "Sign contract and confirm days when place is available", timeline: "1–6 months" },
-    ],
-  },
-  {
-    id: "5",
-    name: "Amsterdam Lyceum",
-    type: "Secondary",
-    curriculum: "Dutch National (VWO/HAVO)",
-    location: "Amsterdam Zuid, Netherlands",
-    ageRange: "12–18",
-    matchScore: 68,
-    highlights: ["Top academic results", "Bilingual stream available", "Excellent sports facilities", "Strong university placement"],
-    tuitionRange: "Free (voluntary contribution ~€200/yr)",
-    applicationSteps: [
-      { title: "Pre-registration", description: "Register interest during the open day period (Jan–Mar)", timeline: "January–March" },
-      { title: "Application", description: "Submit application with primary school recommendation (basisschooladvies)", timeline: "March" },
-      { title: "Lottery/Placement", description: "Oversubscribed schools use a lottery system", timeline: "April" },
-      { title: "Confirmation", description: "Accept place and complete enrollment forms", timeline: "May" },
-    ],
-  },
-  {
-    id: "6",
-    name: "The British School of Amsterdam",
-    type: "International",
-    curriculum: "British (IGCSE/A-Level)",
-    location: "Amsterdam Buitenveldert, Netherlands",
-    ageRange: "3–18",
-    matchScore: 91,
-    highlights: ["British curriculum", "Small class sizes", "Strong expat community", "Excellent transition support"],
-    tuitionRange: "€14,000–€24,000/yr",
-    applicationSteps: [
-      { title: "Online Application", description: "Complete application and upload recent school reports", timeline: "Rolling admissions" },
-      { title: "Assessment", description: "Age-appropriate assessment in English and Maths", timeline: "Within 2 weeks of application" },
-      { title: "Family Meeting", description: "Informal meeting with Head of Section", timeline: "After assessment" },
-      { title: "Offer", description: "Conditional or unconditional offer issued", timeline: "Within 1 week" },
-      { title: "Enrollment", description: "Accept offer, pay deposit, and submit medical forms", timeline: "Within 2 weeks of offer" },
+      { title: "Register Interest", description: "Register with the municipality and apply directly", timeline: "From age 3" },
+      { title: "Application Form", description: "Submit application to the school", timeline: "By deadline" },
+      { title: "Confirmation", description: "Placement confirmed, typically guaranteed for catchment area", timeline: "3–6 months before start" },
     ],
   },
 ];
 
 export function getMatchedSchools(
   schoolTypes: string[],
-  childAge: string
+  city: string
 ): School[] {
-  const age = parseInt(childAge) || 5;
-
-  return mockSchools
-    .map((school) => {
-      let score = school.matchScore;
-      const [minAge, maxAge] = school.ageRange.split("–").map((s) => parseInt(s));
-      if (age >= minAge && age <= maxAge) score += 5;
-      else score -= 20;
-
-      if (schoolTypes.length > 0) {
-        const typeMatch = schoolTypes.some(
-          (t) => school.type.toLowerCase().includes(t.toLowerCase()) || school.curriculum.toLowerCase().includes(t.toLowerCase())
-        );
-        if (typeMatch) score += 8;
-      }
-
-      return { ...school, matchScore: Math.min(99, Math.max(10, score)) };
-    })
-    .sort((a, b) => b.matchScore - a.matchScore);
+  return mockSchools.map((school) => ({
+    ...school,
+    matchScore: school.matchScore,
+  })).sort((a, b) => b.matchScore - a.matchScore);
 }
