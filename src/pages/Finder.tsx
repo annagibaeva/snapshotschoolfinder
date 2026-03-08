@@ -1,5 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FinderFormData } from "@/types/snapshot";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import ProgressBar from "@/components/snapshot/ProgressBar";
 import StepYourMove from "@/components/snapshot/StepYourMove";
 import StepChildProfile from "@/components/snapshot/StepChildProfile";
@@ -24,6 +27,8 @@ const Finder = () => {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FinderFormData>(initialData);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const canProceed = () => {
     switch (step) {
@@ -34,11 +39,31 @@ const Finder = () => {
     }
   };
 
+  const saveChildProfile = async () => {
+    if (!user) return;
+    await supabase.from("children").insert({
+      user_id: user.id,
+      name: data.child.name || null,
+      age: data.child.age,
+      languages: data.child.languages || null,
+      special_needs: data.child.specialNeeds || null,
+      move_country: data.move.country || null,
+      move_city: data.move.city || null,
+      move_date: data.move.moveDate || null,
+      school_types: data.preferences.schoolTypes,
+      top_priorities: data.preferences.topPriorities,
+      want_tracking: data.preferences.wantApplicationTracking,
+      want_doc_help: data.preferences.wantDocumentHelp,
+      want_timeline: data.preferences.wantTimelineBuilding,
+    });
+  };
+
   const next = () => {
     if (!canProceed()) return;
     if (step === 2) {
       setLoading(true);
-      setTimeout(() => {
+      setTimeout(async () => {
+        if (user) await saveChildProfile();
         setLoading(false);
         setStep(3);
       }, 2000);
@@ -65,9 +90,15 @@ const Finder = () => {
           </a>
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground hidden sm:block">For expat families</span>
-            <button className="px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 text-xs font-semibold text-primary">
-              Sign In
-            </button>
+            {user ? (
+              <button onClick={() => navigate("/dashboard")} className="px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 text-xs font-semibold text-primary">
+                Dashboard
+              </button>
+            ) : (
+              <button onClick={() => navigate("/auth")} className="px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 text-xs font-semibold text-primary">
+                Sign In
+              </button>
+            )}
           </div>
         </div>
       </header>

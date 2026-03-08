@@ -5,9 +5,10 @@ import { cn } from "@/lib/utils";
 interface Props {
   school: School;
   index: number;
+  onStartApplication?: () => void;
 }
 
-const SchoolCard = ({ school, index }: Props) => {
+const SchoolCard = ({ school, index, onStartApplication }: Props) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -90,6 +91,7 @@ const SchoolCard = ({ school, index }: Props) => {
             </div>
 
             <button
+              onClick={onStartApplication}
               className="mt-3.5 w-full py-3 rounded-xl text-sm font-bold text-primary-foreground tracking-wide transition-opacity hover:opacity-90"
               style={{ backgroundColor: `hsl(${school.color})` }}
             >
